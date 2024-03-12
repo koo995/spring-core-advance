@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class OrderRepositoryV0 {
+public class OrderRepository {
 
     private final HelloTrace trace;
 

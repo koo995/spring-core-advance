@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class OrderServiceV0 {
+public class OrderService {
 
-    private final OrderRepositoryV0 orderRepository;
+    private final OrderRepository orderRepository;
     private final HelloTrace trace;
 
     public void orderItem(String itemId) {
