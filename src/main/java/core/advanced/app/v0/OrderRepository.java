@@ -1,5 +1,6 @@
 package core.advanced.app.v0;
 
+import core.advanced.trace.TraceId;
 import core.advanced.trace.TraceStatus;
 import core.advanced.trace.hellotrace.HelloTrace;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +12,11 @@ public class OrderRepository {
 
     private final HelloTrace trace;
 
-    public void save(String itemId) {
+    public void save(TraceId traceId, String itemId) {
 
         TraceStatus status = null;
         try {
-            status = trace.begin("OrderRepository.save()");
+            status = trace.beginSync(traceId, "OrderRepository.save()");
             // 저장 로직
             if (itemId.equals("ex")) {
                 throw new IllegalStateException("예외 발생");
