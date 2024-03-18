@@ -14,22 +14,23 @@ public class FieldLogTrace implements LogTrace {
     private static final String COMPLETE_PREFIX = "<--";
     private static final String EX_PREFIX = "<X-";
 
-    private TraceId traceIdHolder; // 기존에 파라미터를 넘겼다면 여기서 보관해놓고 쓴다.  그러나 *동시성 이슈 발생가능*
+    private ThreadLocal<TraceId> traceIdHolder = new ThreadLocal<>();
 
     @Override
     public TraceStatus begin(String message) {
         syncTraceId();
-        TraceId traceId = traceIdHolder;
+        TraceId traceId = traceIdHolder.get();
         Long startTimeMs = System.currentTimeMillis();
         log.info("[{}] {}{}", traceId.getId(), addSpace(START_PREFIX, traceId.getLevel()), message);
         return new TraceStatus(traceId, startTimeMs, message);
     }
 
     private void syncTraceId() {
-        if (traceIdHolder == null) {
-            traceIdHolder = new TraceId();
+        TraceId traceId = traceIdHolder.get();
+        if (traceId == null) {
+            traceIdHolder.set(new TraceId());
         } else {
-            traceIdHolder = traceIdHolder.createNextId();
+            traceIdHolder.set(traceId.createNextId());
         }
     }
 
@@ -58,12 +59,14 @@ public class FieldLogTrace implements LogTrace {
 
     /**
      * 첫번째 레벨인 이유는 들어가다가 나오면 다시 마지막이 첫 레벨이니까 즉 로그가 끝남
+     * threadLocal.remove()로 반드시 제거해줘야 한다.
      */
     private void releaseTraceId() {
-        if (traceIdHolder.isFirstLevel()) {
-            traceIdHolder = null; //
+        TraceId traceId = traceIdHolder.get();
+        if (traceId.isFirstLevel()) {
+            traceIdHolder.remove();
         } else {
-            traceIdHolder = traceIdHolder.createPreviousId();
+            traceIdHolder.set(traceId.createPreviousId());
         }
     }
 
