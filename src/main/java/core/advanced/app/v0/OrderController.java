@@ -1,7 +1,7 @@
 package core.advanced.app.v0;
 
 import core.advanced.trace.TraceStatus;
-import core.advanced.trace.hellotrace.HelloTrace;
+import core.advanced.trace.logtrace.LogTrace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     private final OrderService orderService;
-    private final HelloTrace trace;
+    private final LogTrace trace;
 
     @GetMapping("/v0/request")
     public String request(String itemId) {
@@ -19,7 +19,7 @@ public class OrderController {
         TraceStatus status = null;
         try {
             status = trace.begin("OrderController.request()");
-            orderService.orderItem(status.getTraceId(), itemId);
+            orderService.orderItem(itemId);
             trace.end(status);
             return "ok";
         } catch (Exception e) {

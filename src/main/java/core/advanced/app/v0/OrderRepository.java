@@ -1,8 +1,7 @@
 package core.advanced.app.v0;
 
-import core.advanced.trace.TraceId;
 import core.advanced.trace.TraceStatus;
-import core.advanced.trace.hellotrace.HelloTrace;
+import core.advanced.trace.logtrace.LogTrace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -10,13 +9,13 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class OrderRepository {
 
-    private final HelloTrace trace;
+    private final LogTrace trace;
 
-    public void save(TraceId traceId, String itemId) {
+    public void save(String itemId) {
 
         TraceStatus status = null;
         try {
-            status = trace.beginSync(traceId, "OrderRepository.save()");
+            status = trace.begin("OrderRepository.save()");
             // 저장 로직
             if (itemId.equals("ex")) {
                 throw new IllegalStateException("예외 발생");
