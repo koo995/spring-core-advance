@@ -1,30 +1,27 @@
 package core.advanced.app.v0;
 
+import core.advanced.trace.callback.TraceTemplate;
 import core.advanced.trace.logtrace.LogTrace;
-import core.advanced.trace.template.AbstractTemplate;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RequiredArgsConstructor
 public class OrderRepository {
 
-    private final LogTrace trace;
+    private final TraceTemplate traceTemplate;
+
+    public OrderRepository(LogTrace trace) {
+        this.traceTemplate = new TraceTemplate(trace);
+    }
 
     public void save(String itemId) {
-
-        AbstractTemplate<Void> template = new AbstractTemplate<>(trace) {
-            @Override
-            protected Void call() {
-                // 저장 로직
-                if (itemId.equals("ex")) {
-                    throw new IllegalStateException("예외 발생");
-                }
-                sleep(1000);
-                return null;
+        traceTemplate.execute("OrderRepository.save()", () -> {
+            // 저장 로직
+            if (itemId.equals("ex")) {
+                throw new IllegalStateException("예외 발생");
             }
-        };
-        template.execute("OrderRepository.save()");
+            sleep(1000);
+            return null;
+        });
     }
 
     private void sleep(int millis) {
