@@ -1,9 +1,9 @@
 package core.advanced.trace.template;
 
 
-import core.advanced.trace.template.code.AbstractTemplate;
 import core.advanced.trace.template.code.SubClassLogic1;
 import core.advanced.trace.template.code.SubClassLogic2;
+import core.advanced.trace.template.code.AbstractTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
