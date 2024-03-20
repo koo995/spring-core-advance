@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
  * 컴퍼넌트 스캔을 안쓰고 직접 스프링 빈으로 등록할 것이다.
  */
 @Slf4j
-public class FieldLogTrace implements LogTrace {
+public class ThreadLocalLogTrace implements LogTrace {
 
     private static final String START_PREFIX = "-->";
     private static final String COMPLETE_PREFIX = "<--";
