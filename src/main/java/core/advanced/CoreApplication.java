@@ -1,5 +1,6 @@
 package core.advanced;
 
+import core.advanced.config.v1_proxy.ConcreteProxyConfig;
 import core.advanced.config.v1_proxy.InterfaceProxyConfig;
 import core.advanced.trace.logtrace.LogTrace;
 import core.advanced.trace.logtrace.ThreadLocalLogTrace;
@@ -9,7 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 //@Import(value = {AppV1Config.class, AppV2Config.class})
-@Import(InterfaceProxyConfig.class)
+//@Import(InterfaceProxyConfig.class)
+@Import(ConcreteProxyConfig.class)
 @SpringBootApplication(scanBasePackages = "core.advanced.app.v3")
 public class CoreApplication {
 
