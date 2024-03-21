@@ -1,12 +1,14 @@
 package core.advanced;
 
+import core.advanced.config.dynamicproxy.DynamicProxyBasicConfig;
 import core.advanced.trace.logtrace.LogTrace;
 import core.advanced.trace.logtrace.ThreadLocalLogTrace;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
-//@Import(value = {AppV1Config.class, AppV2Config.class})
+@Import(DynamicProxyBasicConfig.class)
 @SpringBootApplication(scanBasePackages = "core.advanced.app.v3")
 public class CoreApplication {
 
