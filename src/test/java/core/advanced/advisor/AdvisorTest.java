@@ -11,6 +11,7 @@ import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 
 import java.lang.reflect.Method;
 
@@ -47,6 +48,34 @@ public class AdvisorTest {
 
         proxy.save();
         System.out.println("------------------------------");
+        proxy.find();
+    }
+
+    /**
+     * 사실 이것 말고도 어마어마한 포인트컷이 있다.
+     * 실제로는 aspectJ 관련 포인트컷을 쓸 것이다?
+     * 지금은 최대한 쉬운 것을 써본다.
+     * NameMatchMethodPointcut 메서드 이름을 기반으로 매칭한다. 내부에서는 "PatternMatchUtils"를 사용한다.
+     * 그외...
+     * JdkRegexpMethodPointcut jdk 정규 표현식을 기반으로 포인트컷을 매칭한다.
+     * TruePointcut
+     * AnnotationMatchingPointcut 애노테이션으로 매칭한다.
+     * AspectJExpressionPointcut aspectJ 표현식으로 매칭한다. << 가장 중요한 것이다. 이후 AOP 에서 자세하게 설명
+     */
+    @Test
+    @DisplayName("스프링이 제공하는 포인트컷")
+    void advisorTest3() {
+        ServiceInterface target = new ServiceImpl();
+        ProxyFactory proxyFactory = new ProxyFactory(target);
+
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedNames("save");
+
+        DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor(pointcut, new TimeAdvice());
+        proxyFactory.addAdvisor(advisor);
+        ServiceInterface proxy = (ServiceInterface) proxyFactory.getProxy();
+
+        proxy.save();
         proxy.find();
     }
 
