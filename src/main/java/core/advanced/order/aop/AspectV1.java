@@ -5,27 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 
 @Slf4j
 @Aspect
 public class AspectV1 {
 
     /**
-     * 이렇게 하면 pointcut 의 표현식을 여러군데서 쓸 수 있다. private 을 public 으로 변경한다면
-     * 메서드 이름과 파라미터를 합쳐서 pointcut signature 라 한다. 의미 부여 가능
-     * 반환타입은 void 여야 한다.
+     * 패키지명까지 다 가져와야 한다.
      */
-    @Pointcut("execution(* core.advanced.order..*(..))") // pointcut expression
-    private void allOrder(){} //pointcut signature
-
-    /**
-     * 트랜잭션을 걸기위한 위치  클래스(또는 인터페이스)명이 Service 인 녀석들을 잡음
-     */
-    @Pointcut("execution(* *..*Service.*(..))")
-    private void allService(){}
-
-    @Around("allOrder()")
+    @Around("core.advanced.order.aop.Pointcuts.allOrder()")
     public Object doLog(ProceedingJoinPoint joinPoint) throws Throwable {
         log.info("[log] {}", joinPoint.getSignature()); //join point 시그니처
         return joinPoint.proceed();
@@ -34,7 +22,7 @@ public class AspectV1 {
     /**
      * core.advanced.order 패키지와 하위 패키지 이면서 클래스(또는 인터페이스) 이름 패턴이 *Service
      */
-    @Around("allOrder() && allService()")
+    @Around("core.advanced.order.aop.Pointcuts.orderAndService()")
     public Object doTransaction(ProceedingJoinPoint joinPoint) throws Throwable {
 
         try {
