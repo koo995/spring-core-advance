@@ -19,9 +19,34 @@ public class AspectV1 {
     @Pointcut("execution(* core.advanced.order..*(..))") // pointcut expression
     private void allOrder(){} //pointcut signature
 
+    /**
+     * 트랜잭션을 걸기위한 위치  클래스(또는 인터페이스)명이 Service 인 녀석들을 잡음
+     */
+    @Pointcut("execution(* *..*Service.*(..))")
+    private void allService(){}
+
     @Around("allOrder()")
     public Object doLog(ProceedingJoinPoint joinPoint) throws Throwable {
         log.info("[log] {}", joinPoint.getSignature()); //join point 시그니처
         return joinPoint.proceed();
+    }
+
+    /**
+     * core.advanced.order 패키지와 하위 패키지 이면서 클래스(또는 인터페이스) 이름 패턴이 *Service
+     */
+    @Around("allOrder() && allService()")
+    public Object doTransaction(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        try {
+            log.info("[트랜잭션 시작] {}", joinPoint.getSignature());
+            Object result = joinPoint.proceed();
+            log.info("[트랜잭션 커밋] {}", joinPoint.getSignature());
+            return result;
+        } catch (Exception e) {
+            log.info("[트랜잭션 롤백] {}", joinPoint.getSignature());
+            throw e;
+        } finally {
+            log.info("[리소스 릴리즈] {}", joinPoint.getSignature());
+        }
     }
 }
