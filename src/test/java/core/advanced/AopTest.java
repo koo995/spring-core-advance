@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Import;
  * 3. "@Import" << 이것은 주로 설정 파일을 추가할 때 사용('@Configuration')
  */
 @Slf4j
-@Import(AspectV1.class)
+@Import({AspectV1.LogAspect.class, AspectV1.TransactionAspect.class})  // 따로 등록을 해줘야 한다.
 @SpringBootTest
 public class AopTest {
 
