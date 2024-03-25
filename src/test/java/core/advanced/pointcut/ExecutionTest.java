@@ -1,12 +1,14 @@
 package core.advanced.pointcut;
 
-import core.advanced.order.member.MemberServiceImpl;
+import core.advanced.member.MemberServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 
 import java.lang.reflect.Method;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 public class ExecutionTest {
@@ -26,7 +28,91 @@ public class ExecutionTest {
 
     @Test
     void printMethod() {
-        //public java.lang.String hello.aop.member.MemberServiceImpl.hello(java.lang.String)
+        //public java.lang.String core.advanced.member.MemberServiceImpl.hello(java.lang.String)
         log.info("helloMethod={}", helloMethod);
+    }
+
+    @Test
+    void exactMatch() {
+        //public java.lang.String core.advanced.member.MemberServiceImpl.hello(java.lang.String)
+        pointcut.setExpression("execution(public String core.advanced.member.MemberServiceImpl.hello(String))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+
+    /**
+     * 가장 많이 생략한 포인트 컷 이다.
+     * '*' 은 아무 값이 들어와도 된다는 뜻이다.
+     * 파라미터에서 '**' 은 파라미터의 타입과 파라미터 수가 상관없다는 뜻이다.
+     */
+    @Test
+    void allMatch() {
+        pointcut.setExpression("execution(* *(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+
+    /**
+     * 메서드 명이 매칭되게 하는 것이다.
+     */
+    @Test
+    void nameMatch() {
+        pointcut.setExpression("execution(* hello(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+
+    @Test
+    void nameMatchStar1() {
+        pointcut.setExpression("execution(* hel*(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+
+    @Test
+    void nameMatchStar2() {
+        pointcut.setExpression("execution(* *el*(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+
+    @Test
+    void nameMatchFalse() {
+        pointcut.setExpression("execution(* nono(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isFalse();
+    }
+
+    /**
+     * 패키지 명을 정확하게 매칭시킨다.
+     */
+    @Test
+    void packageExactMatch1() {
+        pointcut.setExpression("execution(* core.advanced.member.MemberServiceImpl.hello(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+
+    /**
+     * hello.aop.member 이 패키지명 안에 있는 것 중에 매칭
+     */
+    @Test
+    void packageExactMatch2() {
+        pointcut.setExpression("execution(* core.advanced.member.*.*(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+
+    /**
+     * 매칭이 실패하는 경우 . 이 하나 부족하다.
+     */
+    @Test
+    void packageExactFalse() {
+        pointcut.setExpression("execution(* core.advanced.*.*(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isFalse();
+    }
+
+    @Test
+    void packageMatchSubPackage1() {
+        pointcut.setExpression("execution(* core.advanced.member..*.*(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
+    }
+
+    @Test
+    void packageMatchSubPackage2() {
+        pointcut.setExpression("execution(* core.advanced..*.*(..))");
+        assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
     }
 }
