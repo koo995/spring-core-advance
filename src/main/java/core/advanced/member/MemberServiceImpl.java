@@ -1,8 +1,8 @@
-package core.advanced.order.member;
+package core.advanced.member;
 
 
-import core.advanced.order.member.annotation.ClassAop;
-import core.advanced.order.member.annotation.MethodAop;
+import core.advanced.member.annotation.ClassAop;
+import core.advanced.member.annotation.MethodAop;
 import org.springframework.stereotype.Component;
 
 @ClassAop

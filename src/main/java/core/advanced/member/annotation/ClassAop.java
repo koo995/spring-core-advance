@@ -1,4 +1,4 @@
-package core.advanced.order.member.annotation;
+package core.advanced.member.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
