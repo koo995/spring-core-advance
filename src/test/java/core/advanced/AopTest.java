@@ -4,6 +4,7 @@ package core.advanced;
 import core.advanced.order.OrderRepository;
 import core.advanced.order.OrderService;
 import core.advanced.order.aop.AspectV1;
+import core.advanced.order.aop.AspectV2;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,8 @@ import org.springframework.context.annotation.Import;
  * 3. "@Import" << 이것은 주로 설정 파일을 추가할 때 사용('@Configuration')
  */
 @Slf4j
-@Import({AspectV1.LogAspect.class, AspectV1.TransactionAspect.class})  // 따로 등록을 해줘야 한다.
+//@Import({AspectV1.LogAspect.class, AspectV1.TransactionAspect.class})  // 따로 등록을 해줘야 한다.
+@Import(AspectV2.class)
 @SpringBootTest
 public class AopTest {
 
